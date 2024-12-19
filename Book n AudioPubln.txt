@@ -1,0 +1,130 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+const int MAX_BOOKS = 10;
+const int MAX_TAPES = 10;
+
+class Publication {
+protected:
+    string title;
+    float price;
+public:
+    void add() {
+        cout << "\nEnter the Publication information:\n";
+        cout << "Enter Title of the Publication: ";
+        cin.ignore();
+        getline(cin, title);
+        cout << "Enter Price of Publication: ";
+        cin >> price;
+    }
+    
+    void display() const {
+        cout << "\n--------------------------------------------------";
+        cout << "\nTitle of Publication: " << title;
+        cout << "\nPublication Price: " << price;
+    }
+};
+
+class Book : public Publication {
+private:
+    int page_count;
+public:
+    void addBook() {
+        add();
+        cout << "Enter Page Count of Book: ";
+        cin >> page_count;
+        if (page_count <= 0) {
+            cout << "\nInvalid Page Count! Setting to 0.\n";
+            page_count = 0;
+        }
+    }
+    
+    void displayBook() const {
+        display();
+        cout << "\nPage Count: " << page_count;
+        cout << "\n--------------------------------------------------\n";
+    }
+};
+
+class Tape : public Publication {
+private:
+    float play_time;
+public:
+    void addTape() {
+        add();
+        cout << "Enter Play Duration of the Tape (in minutes): ";
+        cin >> play_time;
+        if (play_time <= 0) {
+            cout << "\nInvalid Play Time! Setting to 0.\n";
+            play_time = 0;
+        }
+    }
+    
+    void displayTape() const {
+        display();
+        cout << "\nPlay Time: " << play_time << " min";
+        cout << "\n--------------------------------------------------\n";
+    }
+};
+
+int main() {
+    Book books[MAX_BOOKS];
+    Tape tapes[MAX_TAPES];
+    int book_count = 0, tape_count = 0;
+    int choice;
+
+    do {
+        cout << "\n* * * * * PUBLICATION DATABASE SYSTEM * * * * *";
+        cout << "\n-------------------- MENU ---------------------";
+        cout << "\n1. Add Information to Books";
+        cout << "\n2. Add Information to Tapes";
+        cout << "\n3. Display Books Information";
+        cout << "\n4. Display Tapes Information";
+        cout << "\n5. Exit";
+        cout << "\n\nEnter your choice: ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1:
+                if (book_count < MAX_BOOKS) {
+                    books[book_count++].addBook();
+                } else {
+                    cout << "\nBook database is full!\n";
+                }
+                break;
+
+            case 2:
+                if (tape_count < MAX_TAPES) {
+                    tapes[tape_count++].addTape();
+                } else {
+                    cout << "\nTape database is full!\n";
+                }
+                break;
+
+            case 3:
+                cout << "\n* * * * BOOK PUBLICATION DATABASE * * * *";
+                for (int i = 0; i < book_count; i++) {
+                    books[i].displayBook();
+                }
+                break;
+
+            case 4:
+                cout << "\n* * * * TAPE PUBLICATION DATABASE * * * *";
+                for (int i = 0; i < tape_count; i++) {
+                    tapes[i].displayTape();
+                }
+                break;
+
+            case 5:
+                cout << "\nThank you for using the Publication Database System!\n";
+                break;
+
+            default:
+                cout << "\nInvalid choice! Please try again.\n";
+                break;
+        }
+    } while (choice != 5);
+
+    return 0;
+}

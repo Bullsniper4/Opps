@@ -1,0 +1,195 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+class StudData;
+
+class Student {
+    string name;
+    int roll_no;
+    string cls;
+    char* division;
+    string dob;
+    char* bloodgroup;
+    static int count;
+
+public:
+    Student() // Default Constructor
+    {
+        name = "";
+        roll_no = 0;
+        cls = "";
+        division = new char;
+        dob = "dd/mm/yyyy";
+        bloodgroup = new char[4];
+    }
+
+    ~Student() {
+        delete division;
+        delete[] bloodgroup;
+    }
+
+    static int getCount() {
+        return count;
+    }
+
+    void getData(StudData*);
+    void dispData(StudData*);
+};
+
+class StudData {
+    string caddress;
+    long int* telno;
+    string dlno;
+    friend class Student;
+
+public:
+    StudData() {
+        caddress = "";
+        telno = new long;
+        dlno = "";
+    }
+
+    ~StudData() {
+        delete telno;
+    }
+
+    void getStudData() {
+        cout << "Enter Contact Address: ";
+        cin.get();
+        getline(cin, caddress);
+
+        // Validate Telephone Number (10 digits)
+        cout << "Enter Telephone Number: ";
+        while (true) {
+            cin >> *telno;
+            if (*telno >= 1000000000 && *telno <= 9999999999) { // Check range instead of using to_string
+                break;
+            } else {
+                cout << "Invalid! Telephone number must be 10 digits. Try again: ";
+            }
+        }
+
+        // Validate Driving License Number (assume minimum 8 characters)
+        cout << "Enter Driving License Number: ";
+        while (true) {
+            cin >> dlno;
+            if (dlno.length() >= 8) break;
+            else cout << "Invalid! Driving License number must be at least 8 characters. Try again: ";
+        }
+    }
+
+    void dispStudData() const {
+        cout << "Contact Address: " << caddress << endl;
+        cout << "Telephone Number: " << *telno << endl;
+        cout << "Driving License Number: " << dlno << endl;
+    }
+};
+
+bool validateDOB(string dob) {
+    if (dob.length() != 10 || dob[2] != '/' || dob[5] != '/') {
+        return false;
+    }
+    
+    int day = stoi(dob.substr(0, 2));
+    int month = stoi(dob.substr(3, 2));
+    int year = stoi(dob.substr(6, 4));
+
+    if (day < 1 || day > 31 || month < 1 || month > 12 || year < 1900 || year > 2100) {
+        return false;
+    }
+
+    // Check for days in each month
+    if ((month == 4 || month == 6 || month == 9 || month == 11) && day > 30) return false;
+    if (month == 2) {
+        bool leap = (year % 4 == 0 && (year % 100 != 0 || year % 400 == 0));
+        if ((leap && day > 29) || (!leap && day > 28)) return false;
+    }
+    return true;
+}
+
+inline void Student::getData(StudData* st) {
+    cout << "Enter Student Name: ";
+    cin.get();
+    getline(cin, name);
+
+    cout << "Enter Roll Number: ";
+    cin >> roll_no;
+
+    cout << "Enter Class: ";
+    cin.get();
+    getline(cin, cls);
+
+    cout << "Enter Division: ";
+    cin >> division;
+
+    // Validate Date of Birth (dd/mm/yyyy format without regex)
+    cout << "Enter Date of Birth (dd/mm/yyyy): ";
+    while (true) {
+        cin >> dob;
+        if (validateDOB(dob)) break;
+        else cout << "Invalid format! Enter DOB as dd/mm/yyyy: ";
+    }
+
+    // Validate Blood Group
+    cout << "Enter Blood Group: ";
+    while (true) {
+        cin >> bloodgroup;
+        string validBloodGroups[] = {"A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"};
+        bool valid = false;
+        for (const string& bg : validBloodGroups) {
+            if (bg == bloodgroup) {
+                valid = true;
+                break;
+            }
+        }
+        if (valid) break;
+        else cout << "Invalid blood group! Enter a valid blood group (e.g., A+, O-, etc.): ";
+    }
+
+    st->getStudData();
+    count++;
+}
+
+inline void Student::dispData(StudData* st1)  {
+    cout << "Student Name: " << name << endl;
+    cout << "Roll Number: " << roll_no << endl;
+    cout << "Class: " << cls << endl;
+    cout << "Division: " << division << endl;
+    cout << "Date of Birth: " << dob << endl;
+    cout << "Blood Group: " << bloodgroup << endl;
+    st1->dispStudData();
+}
+
+int Student::count;
+
+int main() {
+    Student* stud1[100];
+    StudData* stud2[100];
+    int n = 0;
+    char ch;
+    do {
+        stud1[n] = new Student;
+        stud2[n] = new StudData;
+        stud1[n]->getData(stud2[n]);
+        n++;
+        cout << "Do you want to add another student (y/n): ";
+        cin >> ch;
+        cin.get();
+    } while (ch == 'y' || ch == 'Y');
+
+    for (int i = 0; i < n; i++) {
+        cout << "---------------------------------------------------------------" << endl;
+        stud1[i]->dispData(stud2[i]);
+    }
+    cout << "---------------------------------------------------------------" << endl;
+    cout << "Total Students: " << Student::getCount();
+    cout << endl << "---------------------------------------------------------------" << endl;
+
+    for (int i = 0; i < n; i++) {
+        delete stud1[i];
+        delete stud2[i];
+    }
+
+    return 0;
+}

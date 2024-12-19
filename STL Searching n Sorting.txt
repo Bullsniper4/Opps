@@ -1,0 +1,123 @@
+#include<iostream>
+#include<algorithm>
+#include<string>
+#include<vector>
+using namespace std;
+
+class Person
+{
+public:
+  string name;
+  string dob;
+  string tpn;
+  
+  bool operator ==(const Person& p1)
+  {
+  if(name==p1.name)
+  {
+  return true;
+  }
+  else{
+  return false;}
+  }
+  
+  bool operator <(const Person& p2)
+  {
+  if(name<p2.name)
+  return true;
+  return false; 
+}
+};
+vector<Person> per;
+void print(Person &p1);
+void display();
+void insert();
+void search();
+
+void insert()
+{
+Person p1;
+cout<<"Enter the name of person "<<endl;
+cin>>p1.name;
+cout<<"Enter date of birth "<<endl;
+cin>>p1.dob;
+cout<<"Enter telephone number "<<endl;
+cin>>p1.tpn;
+per.push_back(p1);
+}
+
+void display()
+{
+for_each(per.begin(),per.end(),print);
+}
+
+void print(Person& p1){
+
+cout<<"1.Name : "<<p1.name;
+cout<<"\n2.Date of Birth : "<<p1.dob;
+cout<<"\n3.Telephone number : "<<p1.tpn;
+cout<<"\n\n";
+}
+
+void search()
+{
+vector<Person>::iterator p;
+Person p1;
+cout<<"Enter name to search :"<<endl;
+cin>>p1.name;
+p=find(per.begin(),per.end(),p1);
+if(p==per.end())
+{
+cout<<"\nNot found!";
+}
+else{
+cout<<"\nFound!"<<endl;
+print(*p);
+}
+}
+
+bool compare(const Person &p1,const Person &p2)
+{
+return p1.name<p2.name;
+}
+
+int main()
+{
+int op;
+do{
+cout<<"\nMenu : \n 1.Insert\n 2.Display.\n 3.Search\n 4.Sort\n 5.Exit.";
+cin>>op;
+switch(op)
+{
+case 1:
+int n;
+cout<<"Enter the number of people :"<<endl;
+cin>>n;
+for(int i=0;i<n;i++)
+{
+insert();
+}
+break;
+
+case 2:
+cout<<"\nPersonal data : "<<endl;
+display();
+break;
+
+case 3:
+search();
+break;
+
+case 4:
+cout<<"\nSorted according to name : "<<endl;
+cout<<"\nPersonal data : "<<endl;
+sort(per.begin(),per.end(),compare);
+display();
+
+case 5:
+break;
+}
+}
+while(op!=5);
+
+}

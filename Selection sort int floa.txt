@@ -1,0 +1,50 @@
+#include <iostream>
+using namespace std;
+
+// Define a constant for maximum array size
+#define SIZE 50
+
+// Template function for selection sort
+template <class T>
+void selsort(T arr[], int n) {
+    int i, j, mini;
+    T temp;
+
+    // Selection sort algorithm
+    for (i = 0; i < n - 1; i++) {
+        mini = i;
+        for (j = i + 1; j < n; j++) {
+            if (arr[j] < arr[mini]) {
+                mini = j;
+            }
+        }
+        // Swap if needed
+        if (mini != i) {
+            temp = arr[i];
+            arr[i] = arr[mini];
+            arr[mini] = temp;
+        }
+    }
+
+    // Output sorted array
+    cout << "Sorted array is: ";
+    for (i = 0; i < n; i++) {
+        cout << arr[i] << " ";
+    }
+    cout << endl;
+}
+
+int main() {
+    int arr[5] = {10, 4, 2, 1, 9}; // Integer array
+    float f[5] = {9.2, 3.5, 6.3, 1.0, 10.0}; // Float array
+
+    cout << "Sorting integer array:" << endl;
+    selsort(arr, 5);
+
+    cout << "Sorting float array:" << endl;
+    selsort(f, 5);
+
+    return 0;
+}
+
+
